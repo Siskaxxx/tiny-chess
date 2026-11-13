@@ -1,28 +1,26 @@
 # tiny-chess — build log
 
-2026-11-12, WIB (UTC+7). Built by the main Muse agent in the main
-chat, one assistant message per turn, recorded in
-`session-chess-1.jsonl` (shipped in the submission bundle).
+Built by the main Muse agent in the main chat; the session log is
+shipped in the submission bundle.
 
-- **Setup.** Connected as @retrodropid; kit read: 4,096-byte
-  `main.py`, 16 games per trial vs eight anchored house rungs,
-  deterministic search only, prize gate = sunfish-4k baseline.
-- **PST packing.** `analysis/gen_pst.py` packs seven piece-square
-  tables as chr-offset literals (558 bytes); re-verified before
-  submission.
-- **v1 — 8,662 bytes.** Absolute board, Zobrist TT, killers.
-  Compiles; 2.1x over the limit.
-- **v2 — 6,295 bytes.** String board, slice make / restore unmake,
-  TT keyed on the board string, shared direction table, rook/queen
-  PSTs zeroed.
-- **v3 — 5,818 bytes.** Unified pawn movegen, root folded into
-  `search()`. Recorded: style golf cannot reach 4 KB; restructure.
-- **v4 — 5,725 bytes, rotation.** Mover-perspective incremental
-  score. Proven: perft 20/400/8,902, 26 (castling), 14/191/2,812
-  (endgame); undo exact.
-- **v5 — 5,442 bytes.** Quiescence folded into `search()`; packed
-  form (zlib + base85) measures 3,297 bytes with unpacker — fits.
-- **v6 — final.** Bishop PST restored, perft clean, node budget
-  45,000 → 70,000 after timing (0.8-1.35 s/move). Packed `main.py`:
-  **3,347 bytes**. grade-local cannot grade Python bots here
-  (no Docker); the server practice trial grades.
+- **Setup (2026-11-12).** Kit read: 4,096-byte `main.py`, games vs
+  eight anchored house rungs, deterministic search only, prize
+  gate = sunfish-4k baseline. PST tables packed as chr-offset
+  literals by `analysis/gen_pst.py` (558 bytes).
+- **v1–v3.** Absolute board + Zobrist TT (8,662 B), string board
+  (6,295 B), unified pawn movegen (5,818 B): golf could not reach
+  4 KB; restructure.
+- **v4 — rotation.** Mover-perspective incremental score; perft
+  20/400/8,902, 26 (castling), 14/191/2,812 (endgame); undo exact.
+- **v5.** Quiescence folded into `search()`; packed (zlib +
+  base85) 3,297 bytes with unpacker — fits.
+- **v6.** Bishop PST restored, perft clean, node budget 70,000.
+  Packed `main.py`: 3,347 bytes. Server practice grade 1,173 Elo,
+  above the final floor.
+- **v7 (2026-11-13).** Null-move pruning, killer + history move
+  ordering, node budget 100,000. Perft identical to v6; fresh-
+  instance determinism verified. Local tests: beat v6 4.5–3.5 in
+  an 8-game match; 4.0/6 undefeated (2W 4D) in a gauntlet vs a
+  local replica of the house ladder (depth-2/3/4 and nodes-
+  100k/250k/500k rungs, official openings). An LMR + futility
+  variant scored 3.0/6 and was not chosen. Packed: 3,647 bytes.

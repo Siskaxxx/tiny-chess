@@ -1,22 +1,14 @@
 # tiny-chess — transcript
 
-Built by the main Muse agent in the main chat (no subagent), one
-assistant message per turn; the session log `session-chess-1.jsonl`
-(shipped in the bundle) carries real per-message token usage.
-2026-11-12, WIB.
+Built by the main Muse agent in the main chat (no subagent); the
+session logs shipped in the bundle carry per-message token usage. Round 2 (v6) built 2026-11-12; round 3 (v7) 2026-11-13, WIB.
 
-- **msg-0001/0002 — brief and PST packing.** `analysis/gen_pst.py`
-  written and run: seven tables as chr-offset literals, 558 bytes.
-- **msg-0004 — v1.** Absolute board, Zobrist TT, killers:
-  8,662 bytes, compiles, far over the limit.
-- **msg-0006 — v2.** String board, TT keyed on the board string,
-  shared direction table: 6,295 bytes.
-- **msg-0008 — v3.** Unified pawn movegen, root folded into search:
-  5,818 bytes.
-- **msg-0010 — v4, rotation.** One-orientation movegen and
-  castling, mover-perspective score; perft and score suites pass.
-- **msg-0012 — v5.** Quiescence folded into `search()`; 5,442
-  bytes; packed form measured at 3,297 bytes with unpacker.
-- **msg-0014 — v6.** Bishop PST restored, literals verified,
-  perft clean, node budget 70,000 after timing; packed `main.py`
-  regenerated at 3,347 bytes.
+- **Round 2.** PST literals generated; v1–v3 golfed 8,662 → 5,818
+  bytes; v4 rotation board, perft clean; v5 quiescence folded in;
+  v6 bishop PST restored, 70,000 nodes, packed `main.py` 3,347
+  bytes. Submitted; server practice grade 1,173 Elo.
+- **Round 3.** v7 adds null-move pruning and killer/history
+  ordering, node budget 100,000; perft identical to v6. An 8-game
+  local match (v7 beat v6 4.5–3.5) and a replica-ladder gauntlet
+  (v7 4.0/6 undefeated; LMR variant 3.0/6) chose v7. Packed
+  `main.py` regenerated at 3,647 bytes, payload on one line.
